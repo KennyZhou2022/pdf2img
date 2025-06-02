@@ -1,0 +1,3 @@
+pip install pyinstaller
+cd C:\Users\Kenny\Documents\GitHub\pdf2img\sourceCode
+pyinstaller --noconsole --onefile  --add-data "../poppler;poppler" pdf2img_gui.py
