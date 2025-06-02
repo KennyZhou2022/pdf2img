@@ -3,9 +3,8 @@ import sys
 import threading
 from tkinter import Tk, Label, Button, filedialog, StringVar, Entry, messagebox
 from tkinter.ttk import Progressbar, Combobox
-
 from pdf2image import convert_from_path
-from PIL import Image
+from PIL import Image, ImageTk
 
 
 def get_poppler_path():
@@ -15,11 +14,18 @@ def get_poppler_path():
         return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'poppler', 'bin'))
 
 
+def get_logo_path():
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, 'img', 'placeholder.png')
+    else:
+        return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'img', 'placeholder.png'))
+
+
 class PDF2ImageApp:
     def __init__(self, master):
         self.master = master
         master.title("PDF 转图片工具")
-        master.geometry("600x250")  # 设置窗口初始大小
+        master.geometry("600x280")  # 设置窗口初始大小
         self.pdf_path = StringVar()
         self.output_folder = StringVar()
         self.dpi = StringVar(value="500")
@@ -56,6 +62,14 @@ class PDF2ImageApp:
 
         self.convert_botton = Button(master, text="开始转换", command=self.start_conversion)
         self.convert_botton.grid(row=6, column=0, columnspan=3, pady=10)
+
+        logo_image_path = get_logo_path()
+        logo_image = Image.open(logo_image_path)  # 替换为你实际的图片路径
+        logo_image = logo_image.resize((102, 24))
+        self.logo_photo = ImageTk.PhotoImage(logo_image)
+
+        logo_label = Label(master, image=self.logo_photo)
+        logo_label.grid(row=7, column=0, columnspan=3)
 
     def browse_pdf(self):
         file_path = filedialog.askopenfilename(filetypes=[("PDF 文件", "*.pdf")])
